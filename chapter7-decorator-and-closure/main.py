@@ -1,4 +1,5 @@
-
+import functools
+import time
 registry = []
 
 def register(func):
@@ -69,3 +70,65 @@ avg = make_averager2()
 
 print(avg(2))
 print(avg(3))
+
+
+
+def my_decorator(func):
+
+    @functools.wraps(func) # 将原函数的属性赋值到wrapper
+    def wrapper(*args, **kw):
+        print("this is wrapper")
+        func(*args, **kw)
+    return wrapper
+
+@my_decorator
+def show():
+    print('show')
+
+print(show.__name__) # 如果没有@functools.wraps会上打印出wrapper
+
+
+
+# 缓存
+@functools.lru_cache() # 此处括号不能省略，因为装饰器有函数
+def test(n):
+    print('test')
+    return n
+
+print(test(1))
+print(test(1))
+
+
+# 叠放装饰器
+# 相当于 f = a(b(f))
+# @a
+# @b
+# def f():
+    # print('f')
+
+
+# 参数化装饰器
+
+DEFAULT_FMT = '[{elapsed:0.8f}s] {name}({args}) -> {result}'
+
+# clock是装饰器工厂函数
+def clock(fmt=DEFAULT_FMT):
+    def decorate(func): # decorate才是装饰器
+        def clocked(*_args): # clocked是wrapper
+            t0 = time.time()
+            _result = func(*_args)
+            elapsed = time.time() - t0
+            name = func.__name__
+            args = ','.join(repr(arg) for arg in _args)
+            result = repr(_result)
+            print(fmt.format(**locals())) # locals可以返回局部变量的dict
+            return _result
+        return clocked
+    return decorate
+
+@clock() # 相当于先调用装饰器工厂函数返回一个装饰器再应用到函数上
+def clock_test(seconds):
+    time.sleep(seconds)
+
+for i in range(3):
+    clock_test(.123)
