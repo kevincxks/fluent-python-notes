@@ -3,22 +3,24 @@ from math import hypot
 import random
 
 
-
-Card = collections.namedtuple('Card', ['rank', 'suit'])
+Card = collections.namedtuple("Card", ["rank", "suit"])
 
 
 class FrenchDeck:
-    ranks: list = [str(n) for n in range(2, 11)] + list('JQKA')
-    suits: list = 'spades diamonds clubs hearts'.split()
+    ranks: list = [str(n) for n in range(2, 11)] + list("JQKA")
+    suits: list = "spades diamonds clubs hearts".split()
 
     def __init__(self):
-        self._cards: list = [Card(rank, suit) for suit in self.suits
-                                              for rank in self.ranks]
+        self._cards: list = [
+            Card(rank, suit) for suit in self.suits for rank in self.ranks
+        ]
+
     def __len__(self):
         return len(self._cards)
 
     def __getitem__(self, position):
         return self._cards[position]
+
 
 deck = FrenchDeck()
 
@@ -35,22 +37,22 @@ def my_order(card: Card):
     suit_values = dict(spades=3, diamonds=2, clubs=1, hearts=0)
     return FrenchDeck.ranks.index(card.rank) * 10 + suit_values[card.suit]
 
+
 for card in sorted(deck, key=my_order):
     print(card)
 
 
 class Vector:
-    
     def __init__(self, x: int = 0, y: int = 0) -> None:
         self.x = x
         self.y = y
 
     # 优先实现__repr__
     def __repr__(self) -> str:
-        return 'Vector(%r, %r)' % (self.x, self.y)
+        return "Vector(%r, %r)" % (self.x, self.y)
 
     def __str__(self) -> str:
-        return 'Vector(%r, %r)' % (self.x, self.y)
+        return "Vector(%r, %r)" % (self.x, self.y)
 
     def __abs__(self) -> float:
         return hypot(self.x, self.y)
@@ -67,6 +69,7 @@ class Vector:
     def __mul__(self, scalar):
         return Vector(self.x * scalar, self.y * scalar)
 
+
 v1 = Vector(2, 4)
 v2 = Vector(2, 1)
 print(v1 + v2)
@@ -76,6 +79,3 @@ print(abs(v))
 
 print(v * 3)
 print(abs(v * 3))
-
-
-
